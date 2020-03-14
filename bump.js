@@ -3,8 +3,9 @@ const packageJson = require('./package.json');
 const fs = require('fs');
 const cp = require('child_process');
 
-const gitHash = cp.spawnSync('git', ['rev-parse', '--short', 'HEAD']).stdout.toString().trim();
-const alphaVersion = semver.inc(packageJson.version, 'prerelease', true, gitHash);
-packageJson.version = alphaVersion;
+const latestAlpha = cp.spawnSync('npm', ['view', 'graphql-import@alpha', 'version']).stdout.toString().trim();
+const newAlpha = semver.inc(latestAlpha, 'prerelease', true, 'alpha');
+
+packageJson.version = newAlpha;
 
 fs.writeFileSync('./package.json', JSON.stringify(packageJson, null, 2));
